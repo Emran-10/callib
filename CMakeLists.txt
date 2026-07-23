@@ -15,7 +15,7 @@ find_package(Qt6 COMPONENTS
     REQUIRED
 )
 
-# Add subdirectories
+# Add subdirectories - ORDER MATTERS!
 add_subdirectory(src/core)
 add_subdirectory(src/utilities)
 add_subdirectory(src/features)
