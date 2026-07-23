@@ -5,6 +5,7 @@
 #include <QGroupBox>
 #include <QLabel>
 #include <QInputDialog>
+#include <QScrollArea>
 #include <QDebug>
 
 namespace features::ui {
@@ -12,7 +13,7 @@ namespace features::ui {
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent) {
     setWindowTitle("CalLib - Document Manager");
-    setGeometry(100, 100, 1000, 800);
+    setGeometry(100, 100, 1200, 900);
     setStyleSheet("background-color: #2b2b2b; color: #ffffff; font-family: Ubuntu; font-size: 10pt;");
 
     // Get service references
@@ -32,165 +33,182 @@ MainWindow::~MainWindow() = default;
 void MainWindow::setupUI() {
     auto *centralWidget = new QWidget(this);
     auto *mainLayout = new QVBoxLayout(centralWidget);
-    mainLayout->setSpacing(10);
-    mainLayout->setContentsMargins(15, 15, 15, 15);
+    mainLayout->setSpacing(5);
+    mainLayout->setContentsMargins(10, 10, 10, 10);
+
+    // Scrollable area for content
+    auto *scrollArea = new QScrollArea();
+    scrollArea->setStyleSheet("QScrollArea { background-color: #2b2b2b; border: none; }");
+    scrollArea->setWidgetResizable(true);
+
+    auto *scrollContent = new QWidget();
+    auto *scrollLayout = new QVBoxLayout(scrollContent);
+    scrollLayout->setSpacing(8);
+    scrollLayout->setContentsMargins(5, 5, 5, 5);
 
     // Title
-    auto *titleLabel = new QLabel("অবুঝা: বক | লক্ষ্য: নিবর্চিত নয়");
-    titleLabel->setStyleSheet("font-size: 14pt; font-weight: bold; color: #4CAF50;");
-    mainLayout->addWidget(titleLabel);
+    auto *titleLabel = new QLabel("অবুঝা: বক | লক্ষ্য: নির্বাচিত নয়");
+    titleLabel->setStyleSheet("font-size: 14pt; font-weight: bold; color: #4CAF50; padding: 5px;");
+    scrollLayout->addWidget(titleLabel);
 
-    // Subject Selection Section
-    createSubjectSection();
-    mainLayout->addWidget(m_subjectCombo->parentWidget());
+    // Add all sections
+    createSubjectSection(scrollLayout);
+    createCaptureConfigSection(scrollLayout);
+    createImageCaptureSection(scrollLayout);
+    createHeadingControlSection(scrollLayout);
+    createControlButtonsSection(scrollLayout);
 
-    // Capture Configuration Section
-    createCaptureConfigSection();
-    mainLayout->addWidget(m_captureFormatCombo->parentWidget()->parentWidget());
+    scrollLayout->addStretch();
+    scrollContent->setLayout(scrollLayout);
+    scrollArea->setWidget(scrollContent);
+    mainLayout->addWidget(scrollArea, 1);
 
-    // Image Capture Section
-    createImageCaptureSection();
-    mainLayout->addWidget(m_btnAddImage->parentWidget());
+    // Status Area at bottom
+    auto *statusLabel = new QLabel("Status Log:");
+    statusLabel->setStyleSheet("color: #4CAF50; font-weight: bold; font-size: 9pt;");
+    mainLayout->addWidget(statusLabel);
 
-    // Heading Control Section
-    createHeadingControlSection();
-    mainLayout->addWidget(m_headingInput->parentWidget()->parentWidget());
-
-    // Control Buttons Section
-    createControlButtonsSection();
-    mainLayout->addWidget(m_btnStart->parentWidget());
-
-    // Status Area
     m_statusArea = new QTextEdit();
     m_statusArea->setReadOnly(true);
-    m_statusArea->setMaximumHeight(150);
-    m_statusArea->setStyleSheet("background-color: #1e1e1e; color: #00ff00; border: 1px solid #444;");
+    m_statusArea->setMaximumHeight(120);
+    m_statusArea->setStyleSheet("background-color: #1e1e1e; color: #00ff00; border: 1px solid #444; font-family: Courier; font-size: 9pt;");
     m_statusArea->setText("[System] CalLib initialized\n[System] Ready to capture documents");
     mainLayout->addWidget(m_statusArea);
 
-    mainLayout->addStretch();
     setCentralWidget(centralWidget);
 }
 
-void MainWindow::createSubjectSection() {
+void MainWindow::createSubjectSection(QVBoxLayout *mainLayout) {
     auto *groupBox = new QGroupBox("বিষয় নির্বাচন (Subject Selection):");
-    groupBox->setStyleSheet("QGroupBox { color: #ffffff; border: 1px solid #444; border-radius: 5px; margin-top: 10px; padding-top: 10px; }");
+    groupBox->setStyleSheet("QGroupBox { color: #ffffff; border: 1px solid #555; border-radius: 5px; margin: 5px; padding-top: 15px; } QGroupBox::title { subcontrol-origin: margin; left: 10px; padding: 0 3px 0 3px; }");
     auto *layout = new QHBoxLayout(groupBox);
+    layout->setSpacing(5);
 
     m_subjectCombo = new QComboBox();
-    m_subjectCombo->setStyleSheet("background-color: #333; color: #ffffff; border: 1px solid #555; padding: 5px; border-radius: 3px;");
+    m_subjectCombo->setStyleSheet("background-color: #333; color: #ffffff; border: 1px solid #555; padding: 6px; border-radius: 3px; min-width: 150px;");
+    m_subjectCombo->setMinimumHeight(35);
 
     m_btnNewSubject = new QPushButton("বিষয় পরিবর্ত");
-    m_btnNewSubject->setStyleSheet("background-color: #9C27B0; color: white; border: none; padding: 8px 15px; border-radius: 4px; font-weight: bold;");
+    m_btnNewSubject->setStyleSheet("background-color: #9C27B0; color: white; border: none; padding: 8px 15px; border-radius: 4px; font-weight: bold; min-height: 35px;");
 
     m_btnSelectSubject = new QPushButton("নতুন বিষয়");
-    m_btnSelectSubject->setStyleSheet("background-color: #4CAF50; color: white; border: none; padding: 8px 15px; border-radius: 4px; font-weight: bold;");
+    m_btnSelectSubject->setStyleSheet("background-color: #4CAF50; color: white; border: none; padding: 8px 15px; border-radius: 4px; font-weight: bold; min-height: 35px;");
 
-    auto *btnEditSubject = new QPushButton("নতুন ফোকাস");
-    btnEditSubject->setStyleSheet("background-color: #FF9800; color: white; border: none; padding: 8px 15px; border-radius: 4px; font-weight: bold;");
+    m_btnEditFocus = new QPushButton("নতুন ফোকাস");
+    m_btnEditFocus->setStyleSheet("background-color: #FF9800; color: white; border: none; padding: 8px 15px; border-radius: 4px; font-weight: bold; min-height: 35px;");
 
-    auto *btnOtherSubject = new QPushButton("নোট খুলুন");
-    btnOtherSubject->setStyleSheet("background-color: #2196F3; color: white; border: none; padding: 8px 15px; border-radius: 4px; font-weight: bold;");
+    m_btnOtherNotes = new QPushButton("নোট খুলুন");
+    m_btnOtherNotes->setStyleSheet("background-color: #2196F3; color: white; border: none; padding: 8px 15px; border-radius: 4px; font-weight: bold; min-height: 35px;");
 
     layout->addWidget(m_subjectCombo);
     layout->addWidget(m_btnNewSubject);
     layout->addWidget(m_btnSelectSubject);
-    layout->addWidget(btnEditSubject);
-    layout->addWidget(btnOtherSubject);
+    layout->addWidget(m_btnEditFocus);
+    layout->addWidget(m_btnOtherNotes);
 
     groupBox->setLayout(layout);
+    mainLayout->addWidget(groupBox);
 }
 
-void MainWindow::createCaptureConfigSection() {
+void MainWindow::createCaptureConfigSection(QVBoxLayout *mainLayout) {
     auto *groupBox = new QGroupBox("ক্যাপচার ও ইনপুট কনফিগারেশন (Capture Configuration):");
-    groupBox->setStyleSheet("QGroupBox { color: #ffffff; border: 1px solid #444; border-radius: 5px; margin-top: 10px; padding-top: 10px; }");
-    auto *mainLayout = new QVBoxLayout(groupBox);
+    groupBox->setStyleSheet("QGroupBox { color: #ffffff; border: 1px solid #555; border-radius: 5px; margin: 5px; padding-top: 15px; } QGroupBox::title { subcontrol-origin: margin; left: 10px; padding: 0 3px 0 3px; }");
+    auto *mainLayoutGroup = new QVBoxLayout(groupBox);
+    mainLayoutGroup->setSpacing(8);
 
     // Format and Hotkey Row
     auto *formatLayout = new QHBoxLayout();
 
     auto *formatLabel = new QLabel("ফরম্যাট:");
-    formatLabel->setStyleSheet("color: #4CAF50; font-weight: bold;");
+    formatLabel->setStyleSheet("color: #4CAF50; font-weight: bold; min-width: 80px;");
     m_captureFormatCombo = new QComboBox();
-    m_captureFormatCombo->addItems({"পুলেট পয়েন্ট (Point)", "রেকট্যাঙ্গেল (Rectangle)", "উইন্ডো (Window)"});
-    m_captureFormatCombo->setStyleSheet("background-color: #333; color: #ffffff; border: 1px solid #555; padding: 5px; border-radius: 3px; min-width: 200px;");
+    m_captureFormatCombo->addItems({"পুলেট পয়েন্ট (Point)", "রেকটাঙ্গেল (Rectangle)", "উইন্ডো (Window)"});
+    m_captureFormatCombo->setStyleSheet("background-color: #333; color: #ffffff; border: 1px solid #555; padding: 6px; border-radius: 3px; min-width: 200px;");
+    m_captureFormatCombo->setMinimumHeight(32);
 
     auto *hotkeyLabel = new QLabel("মোড: কপি মোড (Ctrl+C)");
-    hotkeyLabel->setStyleSheet("color: #4CAF50; font-weight: bold;");
+    hotkeyLabel->setStyleSheet("color: #4CAF50; font-weight: bold; min-width: 180px; margin-left: 20px;");
     m_hotkeyInput = new QLineEdit();
     m_hotkeyInput->setText("Ctrl+C");
     m_hotkeyInput->setReadOnly(true);
-    m_hotkeyInput->setStyleSheet("background-color: #333; color: #ffffff; border: 1px solid #555; padding: 5px; border-radius: 3px; min-width: 150px;");
+    m_hotkeyInput->setStyleSheet("background-color: #333; color: #ffffff; border: 1px solid #555; padding: 6px; border-radius: 3px; min-width: 120px;");
+    m_hotkeyInput->setMinimumHeight(32);
 
     formatLayout->addWidget(formatLabel);
     formatLayout->addWidget(m_captureFormatCombo);
     formatLayout->addWidget(hotkeyLabel);
     formatLayout->addWidget(m_hotkeyInput);
     formatLayout->addStretch();
-    mainLayout->addLayout(formatLayout);
+    mainLayoutGroup->addLayout(formatLayout);
 
     // Section Row
     auto *sectionLayout = new QHBoxLayout();
 
     auto *sectionLabel = new QLabel("বিভাগ (Section):");
-    sectionLabel->setStyleSheet("color: #4CAF50; font-weight: bold;");
+    sectionLabel->setStyleSheet("color: #4CAF50; font-weight: bold; min-width: 80px;");
     m_sectionCombo = new QComboBox();
     m_sectionCombo->addItems({"অন্যান্য (Others)", "ভূমিকা (Introduction)", "মূল বিষয়বস্তু (Main Content)", "উপসংহার (Conclusion)"});
-    m_sectionCombo->setStyleSheet("background-color: #333; color: #ffffff; border: 1px solid #555; padding: 5px; border-radius: 3px; min-width: 200px;");
+    m_sectionCombo->setStyleSheet("background-color: #333; color: #ffffff; border: 1px solid #555; padding: 6px; border-radius: 3px; min-width: 200px;");
+    m_sectionCombo->setMinimumHeight(32);
 
     m_btnAddSection = new QPushButton("নতুন বিভাগ");
-    m_btnAddSection->setStyleSheet("background-color: #4CAF50; color: white; border: none; padding: 8px 15px; border-radius: 4px; font-weight: bold;");
+    m_btnAddSection->setStyleSheet("background-color: #4CAF50; color: white; border: none; padding: 8px 15px; border-radius: 4px; font-weight: bold; min-height: 32px; margin-left: 20px;");
 
     sectionLayout->addWidget(sectionLabel);
     sectionLayout->addWidget(m_sectionCombo);
     sectionLayout->addWidget(m_btnAddSection);
     sectionLayout->addStretch();
-    mainLayout->addLayout(sectionLayout);
+    mainLayoutGroup->addLayout(sectionLayout);
 
-    groupBox->setLayout(mainLayout);
+    groupBox->setLayout(mainLayoutGroup);
+    mainLayout->addWidget(groupBox);
 }
 
-void MainWindow::createImageCaptureSection() {
+void MainWindow::createImageCaptureSection(QVBoxLayout *mainLayout) {
     auto *groupBox = new QGroupBox();
+    groupBox->setStyleSheet("QGroupBox { border: none; margin: 0px; padding: 0px; }");
     auto *layout = new QHBoxLayout(groupBox);
+    layout->setContentsMargins(0, 0, 0, 0);
 
     m_btnAddImage = new QPushButton("ছবি যোগ করুন (Add Image)");
-    m_btnAddImage->setStyleSheet("background-color: #2196F3; color: white; border: none; padding: 15px; border-radius: 4px; font-weight: bold; font-size: 12pt;");
-    m_btnAddImage->setMinimumHeight(50);
+    m_btnAddImage->setStyleSheet("background-color: #2196F3; color: white; border: none; padding: 15px; border-radius: 4px; font-weight: bold; font-size: 12pt; min-height: 50px;");
 
     layout->addWidget(m_btnAddImage);
     groupBox->setLayout(layout);
+    mainLayout->addWidget(groupBox);
 }
 
-void MainWindow::createHeadingControlSection() {
+void MainWindow::createHeadingControlSection(QVBoxLayout *mainLayout) {
     auto *groupBox = new QGroupBox("টার্গেট শিরোনাম নিয়ন্ত্রণ (Target Heading Control):");
-    groupBox->setStyleSheet("QGroupBox { color: #ffffff; border: 1px solid #444; border-radius: 5px; margin-top: 10px; padding-top: 10px; }");
-    auto *mainLayout = new QVBoxLayout(groupBox);
+    groupBox->setStyleSheet("QGroupBox { color: #ffffff; border: 1px solid #555; border-radius: 5px; margin: 5px; padding-top: 15px; } QGroupBox::title { subcontrol-origin: margin; left: 10px; padding: 0 3px 0 3px; }");
+    auto *mainLayoutGroup = new QVBoxLayout(groupBox);
+    mainLayoutGroup->setSpacing(8);
 
     // Heading Input
     auto *headingLabel = new QLabel("শিরোনাম (Heading):");
     headingLabel->setStyleSheet("color: #4CAF50; font-weight: bold;");
     m_headingInput = new QLineEdit();
     m_headingInput->setPlaceholderText("(নতুন করে যোগ করুন / Append to End)");
-    m_headingInput->setStyleSheet("background-color: #333; color: #ffffff; border: 1px solid #555; padding: 8px; border-radius: 3px;");
+    m_headingInput->setStyleSheet("background-color: #333; color: #ffffff; border: 1px solid #555; padding: 8px; border-radius: 3px; min-height: 32px;");
 
-    mainLayout->addWidget(headingLabel);
-    mainLayout->addWidget(m_headingInput);
+    mainLayoutGroup->addWidget(headingLabel);
+    mainLayoutGroup->addWidget(m_headingInput);
 
     // Heading Buttons
     auto *buttonLayout = new QHBoxLayout();
+    buttonLayout->setSpacing(5);
 
     m_btnAppendHeading = new QPushButton("যোগ করুন");
-    m_btnAppendHeading->setStyleSheet("background-color: #FF9800; color: white; border: none; padding: 10px 20px; border-radius: 4px; font-weight: bold;");
+    m_btnAppendHeading->setStyleSheet("background-color: #FF9800; color: white; border: none; padding: 10px 20px; border-radius: 4px; font-weight: bold; min-height: 32px;");
 
     m_btnInsertHeading = new QPushButton("সন্নিবেশ করুন");
-    m_btnInsertHeading->setStyleSheet("background-color: #9C27B0; color: white; border: none; padding: 10px 20px; border-radius: 4px; font-weight: bold;");
+    m_btnInsertHeading->setStyleSheet("background-color: #9C27B0; color: white; border: none; padding: 10px 20px; border-radius: 4px; font-weight: bold; min-height: 32px;");
 
     m_btnUpdateHeading = new QPushButton("আপডেট করুন");
-    m_btnUpdateHeading->setStyleSheet("background-color: #2196F3; color: white; border: none; padding: 10px 20px; border-radius: 4px; font-weight: bold;");
+    m_btnUpdateHeading->setStyleSheet("background-color: #2196F3; color: white; border: none; padding: 10px 20px; border-radius: 4px; font-weight: bold; min-height: 32px;");
 
     m_btnDeleteHeading = new QPushButton("মুছে ফেলুন");
-    m_btnDeleteHeading->setStyleSheet("background-color: #f44336; color: white; border: none; padding: 10px 20px; border-radius: 4px; font-weight: bold;");
+    m_btnDeleteHeading->setStyleSheet("background-color: #f44336; color: white; border: none; padding: 10px 20px; border-radius: 4px; font-weight: bold; min-height: 32px;");
 
     buttonLayout->addWidget(m_btnAppendHeading);
     buttonLayout->addWidget(m_btnInsertHeading);
@@ -198,26 +216,26 @@ void MainWindow::createHeadingControlSection() {
     buttonLayout->addWidget(m_btnDeleteHeading);
     buttonLayout->addStretch();
 
-    mainLayout->addLayout(buttonLayout);
-    groupBox->setLayout(mainLayout);
+    mainLayoutGroup->addLayout(buttonLayout);
+    groupBox->setLayout(mainLayoutGroup);
+    mainLayout->addWidget(groupBox);
 }
 
-void MainWindow::createControlButtonsSection() {
+void MainWindow::createControlButtonsSection(QVBoxLayout *mainLayout) {
     auto *groupBox = new QGroupBox();
+    groupBox->setStyleSheet("QGroupBox { border: none; margin: 5px; padding: 0px; }");
     auto *layout = new QHBoxLayout(groupBox);
+    layout->setSpacing(5);
 
     m_btnStart = new QPushButton("শুরু (Start)");
-    m_btnStart->setStyleSheet("background-color: #4CAF50; color: white; border: none; padding: 12px 30px; border-radius: 4px; font-weight: bold; font-size: 11pt;");
-    m_btnStart->setMinimumHeight(40);
+    m_btnStart->setStyleSheet("background-color: #4CAF50; color: white; border: none; padding: 12px 30px; border-radius: 4px; font-weight: bold; font-size: 11pt; min-height: 40px; min-width: 150px;");
 
     m_btnStop = new QPushButton("থামুন (Stop)");
-    m_btnStop->setStyleSheet("background-color: #f44336; color: white; border: none; padding: 12px 30px; border-radius: 4px; font-weight: bold; font-size: 11pt;");
-    m_btnStop->setMinimumHeight(40);
+    m_btnStop->setStyleSheet("background-color: #f44336; color: white; border: none; padding: 12px 30px; border-radius: 4px; font-weight: bold; font-size: 11pt; min-height: 40px; min-width: 150px;");
     m_btnStop->setEnabled(false);
 
     m_btnExit = new QPushButton("বেরিয়ে যান");
-    m_btnExit->setStyleSheet("background-color: #757575; color: white; border: none; padding: 12px 30px; border-radius: 4px; font-weight: bold; font-size: 11pt;");
-    m_btnExit->setMinimumHeight(40);
+    m_btnExit->setStyleSheet("background-color: #757575; color: white; border: none; padding: 12px 30px; border-radius: 4px; font-weight: bold; font-size: 11pt; min-height: 40px; min-width: 150px;");
 
     layout->addWidget(m_btnStart);
     layout->addWidget(m_btnStop);
@@ -225,19 +243,21 @@ void MainWindow::createControlButtonsSection() {
     layout->addWidget(m_btnExit);
 
     groupBox->setLayout(layout);
+    mainLayout->addWidget(groupBox);
 }
 
 void MainWindow::connectSignals() {
     connect(m_btnNewSubject, &QPushButton::clicked, this, &MainWindow::onAddNewSubject);
     connect(m_btnSelectSubject, &QPushButton::clicked, this, &MainWindow::onSelectExistingSubject);
     connect(m_btnAddImage, &QPushButton::clicked, this, &MainWindow::onAddImage);
+    connect(m_btnAddSection, &QPushButton::clicked, this, &MainWindow::onAddSection);
     connect(m_btnStart, &QPushButton::clicked, this, &MainWindow::onStartCapture);
     connect(m_btnStop, &QPushButton::clicked, this, &MainWindow::onStopCapture);
     connect(m_btnAppendHeading, &QPushButton::clicked, this, &MainWindow::onAppendHeading);
     connect(m_btnInsertHeading, &QPushButton::clicked, this, &MainWindow::onInsertHeading);
     connect(m_btnUpdateHeading, &QPushButton::clicked, this, &MainWindow::onUpdateHeading);
     connect(m_btnDeleteHeading, &QPushButton::clicked, this, &MainWindow::onDeleteHeading);
-    connect(m_btnExit, &QPushButton::clicked, this, &QWidget::close);
+    connect(m_btnExit, &QPushButton::clicked, this, &MainWindow::onExit);
 }
 
 void MainWindow::loadSubjects() {
@@ -268,8 +288,13 @@ void MainWindow::onAddImage() {
     if (!m_imageCapturer) return;
     m_imageCapturer->captureRegion();
     QString imagePath = m_imageCapturer->getCapturedImagePath();
-    m_statusArea->append("[Image] Image captured and added: " + imagePath);
+    m_statusArea->append("[Image] Image captured: " + imagePath);
     qDebug() << "[UI] Image added from:" << imagePath;
+}
+
+void MainWindow::onAddSection() {
+    m_statusArea->append("[Section] New section added: " + m_sectionCombo->currentText());
+    qDebug() << "[UI] Section added:" << m_sectionCombo->currentText();
 }
 
 void MainWindow::onStartCapture() {
@@ -321,6 +346,10 @@ void MainWindow::onUpdateHeading() {
 void MainWindow::onDeleteHeading() {
     m_statusArea->append("[Heading] Heading deleted");
     qDebug() << "[UI] Heading deleted";
+}
+
+void MainWindow::onExit() {
+    close();
 }
 
 } // namespace features::ui

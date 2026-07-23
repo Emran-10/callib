@@ -5,6 +5,7 @@
 #include <QLineEdit>
 #include <QTextEdit>
 #include <QLabel>
+#include <QScrollArea>
 #include <memory>
 #include "core/service_locator.h"
 #include "core/interfaces/i_subject_manager.h"
@@ -24,28 +25,31 @@ private slots:
     void onAddNewSubject();
     void onSelectExistingSubject();
     void onAddImage();
+    void onAddSection();
     void onStartCapture();
     void onStopCapture();
     void onAppendHeading();
     void onInsertHeading();
     void onUpdateHeading();
     void onDeleteHeading();
+    void onExit();
 
 private:
     void setupUI();
     void connectSignals();
     void loadSubjects();
-    void createSubjectSection();
-    void createCaptureConfigSection();
-    void createImageCaptureSection();
-    void createHeadingControlSection();
-    void createControlButtonsSection();
+    void createSubjectSection(QVBoxLayout *mainLayout);
+    void createCaptureConfigSection(QVBoxLayout *mainLayout);
+    void createImageCaptureSection(QVBoxLayout *mainLayout);
+    void createHeadingControlSection(QVBoxLayout *mainLayout);
+    void createControlButtonsSection(QVBoxLayout *mainLayout);
 
     // Subject Selection
     QComboBox *m_subjectCombo;
     QPushButton *m_btnNewSubject;
     QPushButton *m_btnSelectSubject;
-    QLineEdit *m_newSubjectInput;
+    QPushButton *m_btnEditFocus;
+    QPushButton *m_btnOtherNotes;
 
     // Capture Configuration
     QComboBox *m_captureFormatCombo;
@@ -56,7 +60,6 @@ private:
 
     // Image Capture
     QPushButton *m_btnAddImage;
-    QLabel *m_imageStatusLabel;
 
     // Heading Control
     QLineEdit *m_headingInput;
