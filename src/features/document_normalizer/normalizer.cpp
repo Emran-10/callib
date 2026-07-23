@@ -3,9 +3,9 @@
 
 namespace features::document_normalizer {
 
-QString DocumentNormalizer::normalize(const QString &document) {
+QString DocumentNormalizer::normalize(const QString &input) {
     qDebug() << "[DocumentNormalizer] Normalizing document";
-    return document;
+    return input;
 }
 
 } // namespace features::document_normalizer
