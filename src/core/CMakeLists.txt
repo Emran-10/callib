@@ -1,11 +1,8 @@
-# Enable Automatic Resource Compiler (RCC) for this target
-set(CMAKE_AUTORCC ON)
-
+# Core library with abstract interfaces and application bootstrap
 add_library(core_lib
     application.cpp
     application.h
     service_locator.h
-    resources.qrc   # <--- ADD YOUR QRC FILE HERE (adjust filename if named differently, e.g., assets.qrc)
     interfaces/i_logger.h
     interfaces/i_file_handler.h
     interfaces/i_clipboard_monitor.h

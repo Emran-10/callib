@@ -1,3 +1,4 @@
+# Utilities library
 add_library(utilities_lib
     logger.cpp
     logger.h
