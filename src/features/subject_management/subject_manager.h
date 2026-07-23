@@ -6,9 +6,7 @@ namespace features::subject_management {
 class SubjectManager : public core::interfaces::ISubjectManager {
 public:
     void addSubject(const QString &subject) override;
-    QStringList getSubjects() const override;
-private:
-    QStringList m_subjects;
+    void removeSubject(const QString &subject) override;
 };
 
 } // namespace features::subject_management

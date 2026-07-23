@@ -1,15 +1,14 @@
 #include "clipboard_monitor.h"
-#include <QGuiApplication>
-#include <QClipboard>
+#include <QDebug>
 
 namespace features::clipboard {
 
-void ClipboardMonitor::startMonitoring() {}
-void ClipboardMonitor::stopMonitoring() {}
+void ClipboardMonitor::startMonitoring() {
+    qDebug() << "[ClipboardMonitor] Started monitoring clipboard";
+}
 
-QString ClipboardMonitor::getLastClipboardText() const {
-    const QClipboard *clipboard = QGuiApplication::clipboard();
-    return clipboard ? clipboard->text() : QString();
+void ClipboardMonitor::stopMonitoring() {
+    qDebug() << "[ClipboardMonitor] Stopped monitoring clipboard";
 }
 
 } // namespace features::clipboard

@@ -5,7 +5,7 @@ namespace features::document_normalizer {
 
 class DocumentNormalizer : public core::interfaces::IDocumentNormalizer {
 public:
-    QString normalize(const QString &input) override;
+    QString normalize(const QString &document) override;
 };
 
 } // namespace features::document_normalizer

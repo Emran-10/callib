@@ -7,7 +7,6 @@ class ClipboardMonitor : public core::interfaces::IClipboardMonitor {
 public:
     void startMonitoring() override;
     void stopMonitoring() override;
-    QString getLastClipboardText() const override;
 };
 
 } // namespace features::clipboard

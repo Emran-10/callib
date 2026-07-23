@@ -5,7 +5,8 @@ namespace features::keyboard_shortcuts {
 
 class ShortcutManager : public core::interfaces::IShortcutManager {
 public:
-    void registerShortcut(const QString &sequence, std::function<void()> callback) override;
+    void registerShortcut(const QString &name, const QString &key) override;
+    void triggerAction(const QString &name) override;
 };
 
 } // namespace features::keyboard_shortcuts

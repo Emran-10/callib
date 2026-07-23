@@ -1,0 +1,35 @@
+# Build directories
+build/
+cmake_build_debug/
+cmake_build_release/
+CMakeFiles/
+
+# CMake cache
+CMakeCache.txt
+CMakeUserPresets.json
+
+# Build artifacts
+*.o
+*.a
+*.so
+*.dylib
+*.dll
+*.exe
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Qt generated
+moc_*.cpp
+ui_*.h
+*.qm
+qrc_*.cpp
+
+# Dependencies
+lib/
+include/

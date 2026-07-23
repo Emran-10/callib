@@ -6,9 +6,7 @@ namespace features::section_manager {
 class SectionManager : public core::interfaces::ISectionManager {
 public:
     void createSection(const QString &name) override;
-    QStringList getSections() const override;
-private:
-    QStringList m_sections;
+    void deleteSection(const QString &name) override;
 };
 
 } // namespace features::section_manager

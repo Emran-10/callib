@@ -1,13 +1,19 @@
 #include "settings_manager.h"
+#include <QDebug>
+#include <QSettings>
 
 namespace features::settings {
 
-void SettingsManager::setValue(const QString &key, const QVariant &value) {
-    m_settings.setValue(key, value);
+void SettingsManager::saveSetting(const QString &key, const QString &value) {
+    QSettings settings("CalLib", "CalLib");
+    settings.setValue(key, value);
+    qDebug() << "[SettingsManager] Saved" << key << "->" << value;
 }
 
-QVariant SettingsManager::getValue(const QString &key, const QVariant &defaultValue) const {
-    return m_settings.value(key, defaultValue);
+QString SettingsManager::loadSetting(const QString &key) {
+    QSettings settings("CalLib", "CalLib");
+    qDebug() << "[SettingsManager] Loading" << key;
+    return settings.value(key, "").toString();
 }
 
 } // namespace features::settings

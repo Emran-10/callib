@@ -1,36 +1,35 @@
 #include "main_window.h"
-#include "core/service_locator.h"
-#include "core/interfaces/i_image_capturer.h"
-#include "core/interfaces/i_logger.h"
-
-#include <QPushButton>
+#include <QWidget>
 #include <QVBoxLayout>
+#include <QLabel>
+#include <QDebug>
 
 namespace features::ui {
 
-MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) {
-    setWindowTitle("GraberNotes Architecture");
-    resize(400, 200);
-
-    auto *central = new QWidget(this);
-    auto *layout = new QVBoxLayout(central);
-
-    auto *btn = new QPushButton("Capture Screen", central);
-    layout->addWidget(btn);
-
-    connect(btn, &QPushButton::clicked, this, &MainWindow::onCaptureButtonClicked);
-    setCentralWidget(central);
+MainWindow::MainWindow(QWidget *parent)
+    : QMainWindow(parent) {
+    setupUI();
+    connectSignals();
 }
 
-void MainWindow::onCaptureButtonClicked() {
-    auto capturer = core::ServiceLocator::get<core::interfaces::IImageCapturer>();
-    auto logger = core::ServiceLocator::get<core::interfaces::ILogger>();
+MainWindow::~MainWindow() = default;
 
-    if (capturer && logger) {
-        if (capturer->captureRegion()) {
-            logger->logInfo("Image captured at path: " + capturer->getCapturedImagePath());
-        }
-    }
+void MainWindow::setupUI() {
+    setWindowTitle("CalLib - Document Manager");
+    setGeometry(100, 100, 800, 600);
+
+    auto *centralWidget = new QWidget(this);
+    auto *layout = new QVBoxLayout(centralWidget);
+    
+    auto *label = new QLabel("Welcome to CalLib", this);
+    layout->addWidget(label);
+    
+    setCentralWidget(centralWidget);
+    qDebug() << "[UI] Main Window initialized";
+}
+
+void MainWindow::connectSignals() {
+    // Connect signals here
 }
 
 } // namespace features::ui

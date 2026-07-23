@@ -1,10 +1,11 @@
 #include "toc_generator.h"
+#include <QDebug>
 
 namespace features::toc_generator {
 
-QString TocGenerator::generateToc(const QString &documentContent) {
-    Q_UNUSED(documentContent);
-    return "Table of Contents\n1. Introduction\n2. Content";
+QString TocGenerator::generateTOC(const QString &document) {
+    qDebug() << "[TocGenerator] Generating table of contents";
+    return "Table of Contents\n";
 }
 
 } // namespace features::toc_generator

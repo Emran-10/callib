@@ -1,13 +1,14 @@
 #include "section_manager.h"
+#include <QDebug>
 
 namespace features::section_manager {
 
 void SectionManager::createSection(const QString &name) {
-    m_sections.append(name);
+    qDebug() << "[SectionManager] Creating section:" << name;
 }
 
-QStringList SectionManager::getSections() const {
-    return m_sections;
+void SectionManager::deleteSection(const QString &name) {
+    qDebug() << "[SectionManager] Deleting section:" << name;
 }
 
 } // namespace features::section_manager

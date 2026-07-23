@@ -1,14 +1,11 @@
 #include "image_capturer.h"
+#include <QDebug>
 
 namespace features::image_capture {
 
-bool ImageCapturer::captureRegion() {
-    m_lastPath = "/tmp/captured_image.png";
-    return true;
-}
-
-QString ImageCapturer::getCapturedImagePath() const {
-    return m_lastPath;
+QString ImageCapturer::captureImage() {
+    qDebug() << "[ImageCapturer] Capturing image";
+    return "";
 }
 
 } // namespace features::image_capture
