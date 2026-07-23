@@ -4,11 +4,14 @@
 namespace features::section_manager {
 
 void SectionManager::createSection(const QString &name) {
-    qDebug() << "[SectionManager] Creating section:" << name;
+    if (!m_sections.contains(name)) {
+        m_sections.append(name);
+        qDebug() << "[SectionManager] Created section:" << name;
+    }
 }
 
-void SectionManager::deleteSection(const QString &name) {
-    qDebug() << "[SectionManager] Deleting section:" << name;
+QStringList SectionManager::getSections() const {
+    return m_sections;
 }
 
 } // namespace features::section_manager

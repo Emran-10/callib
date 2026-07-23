@@ -1,12 +1,12 @@
 #pragma once
 #include "core/interfaces/i_shortcut_manager.h"
+#include <functional>
 
 namespace features::keyboard_shortcuts {
 
 class ShortcutManager : public core::interfaces::IShortcutManager {
 public:
-    void registerShortcut(const QString &name, const QString &key) override;
-    void triggerAction(const QString &name) override;
+    void registerShortcut(const QString &sequence, std::function<void()> callback) override;
 };
 
 } // namespace features::keyboard_shortcuts

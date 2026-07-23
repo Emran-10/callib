@@ -5,7 +5,11 @@ namespace features::image_capture {
 
 class ImageCapturer : public core::interfaces::IImageCapturer {
 public:
-    QString captureImage() override;
+    bool captureRegion() override;
+    QString getCapturedImagePath() const override;
+
+private:
+    QString m_imagePath;
 };
 
 } // namespace features::image_capture

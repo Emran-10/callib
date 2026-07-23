@@ -3,12 +3,11 @@
 
 namespace features::keyboard_shortcuts {
 
-void ShortcutManager::registerShortcut(const QString &name, const QString &key) {
-    qDebug() << "[ShortcutManager] Registering shortcut" << name << "->" << key;
-}
-
-void ShortcutManager::triggerAction(const QString &name) {
-    qDebug() << "[ShortcutManager] Triggering action:" << name;
+void ShortcutManager::registerShortcut(const QString &sequence, std::function<void()> callback) {
+    qDebug() << "[ShortcutManager] Registering shortcut:" << sequence;
+    if (callback) {
+        callback();
+    }
 }
 
 } // namespace features::keyboard_shortcuts

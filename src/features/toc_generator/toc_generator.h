@@ -5,7 +5,7 @@ namespace features::toc_generator {
 
 class TocGenerator : public core::interfaces::ITocGenerator {
 public:
-    QString generateTOC(const QString &document) override;
+    QString generateToc(const QString &documentContent) override;
 };
 
 } // namespace features::toc_generator
