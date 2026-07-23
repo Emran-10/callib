@@ -6,6 +6,8 @@
 #include <QTextEdit>
 #include <QLabel>
 #include <QScrollArea>
+#include <QVBoxLayout>
+#include <QHBoxLayout>
 #include <memory>
 #include "core/service_locator.h"
 #include "core/interfaces/i_subject_manager.h"
