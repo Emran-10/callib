@@ -1,0 +1,6 @@
+<RCC>
+    <qresource prefix="/">
+        <file>resources/fonts/feather.ttf</file>
+        <file>resources/fonts/Kalpurush.ttf</file>
+    </qresource>
+</RCC>
