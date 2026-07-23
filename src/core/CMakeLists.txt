@@ -3,6 +3,7 @@ add_library(core_lib
     application.cpp
     application.h
     service_locator.h
+    resources.qrc
     interfaces/i_logger.h
     interfaces/i_file_handler.h
     interfaces/i_clipboard_monitor.h

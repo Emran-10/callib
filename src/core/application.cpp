@@ -5,7 +5,6 @@
 #include <QFontDatabase>
 #include <QFont>
 #include <QDebug>
-#include <QResource>
 
 // Abstract Interfaces
 #include "core/interfaces/i_logger.h"
@@ -63,28 +62,12 @@ void Application::initializeServices() {
 }
 
 int Application::exec() {
-    // 3. Initialize RCC static resource (Commented out to prevent linker error)
-    // Q_INIT_RESOURCE(resources);
+    // Set default system font if custom fonts are unavailable
+    QFont defaultFont("Ubuntu", 10);
+    QApplication::setFont(defaultFont);
+    qDebug() << "[Font Manager] Using system default font";
 
-    // 4. Register Custom Fonts
-    int kalpurushId = QFontDatabase::addApplicationFont(":/resources/fonts/Kalpurush.ttf");
-    if (kalpurushId != -1) {
-        QString family = QFontDatabase::applicationFontFamilies(kalpurushId).at(0);
-        QFont defaultFont(family, 10);
-        QApplication::setFont(defaultFont);
-        qDebug() << "[Font Manager] Loaded primary font:" << family;
-    } else {
-        qWarning() << "[Font Manager] Failed to load Kalpurush.ttf";
-    }
-
-    int featherId = QFontDatabase::addApplicationFont(":/resources/fonts/feather.ttf");
-    if (featherId != -1) {
-        qDebug() << "[Font Manager] Loaded icon font: Feather";
-    } else {
-        qWarning() << "[Font Manager] Failed to load feather.ttf";
-    }
-
-    // 5. Instantiate Main Window on Heap and display
+    // Instantiate Main Window on Heap and display
     m_mainWindow = std::make_unique<features::ui::MainWindow>();
     m_mainWindow->show();
 

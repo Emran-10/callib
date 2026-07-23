@@ -1,0 +1,8 @@
+<!DOCTYPE RCC>
+<RCC version="1.0">
+    <qresource prefix="/resources">
+        <!-- Font resources can be added here when available -->
+        <!-- <file>fonts/Kalpurush.ttf</file> -->
+        <!-- <file>fonts/feather.ttf</file> -->
+    </qresource>
+</RCC>
